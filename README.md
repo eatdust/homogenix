@@ -1,9 +1,9 @@
-# Homogenix: parallel convolution of fits image by psfex kernels
+# Homogenix: parallel convolution by PSFex kernels
 
 ### Summary
 
-Homogenix is a very simple modern fortran code designed to perform
-fastPSF homogeneisation from the
+Homogenix is a simple modern fortran code designed to perform
+fast PSF homogeneisation from the
 [PSFex](https://github.com/astromatic/psfex) variables kernels.
 
 
@@ -20,7 +20,7 @@ specify the install location of these libraries.
 
 Dealing with multiple files (MPI parallelised):
 
-	homogenix @inlistfiles @inkernelfiles @outlistfiles
+        homogenix @inlistfiles @inkernelfiles @outlistfiles
 
 For a single image (OMP parallelised):
 
