@@ -9,12 +9,11 @@ fast PSF homogeneisation from the
 
 ### Compilation
 
-Please ensure that you have a working installation of the **gfortran** and
-**gcc** compilers (or alternatives), the
-[cfitsio](https://heasarc.gsfc.nasa.gov/fitsio/) and
-[wcslib](https://www.atnf.csiro.au/people/mcalabre/WCS/wcslib/)
-libraries. Editing the provided Makefile is certainly needed to
-specify the install location of these libraries.
+Please ensure that you have a working installation of the **gfortran**
+compiler (possibly its MPI wrappers, or alternatives) and the
+[cfitsio](https://heasarc.gsfc.nasa.gov/fitsio/) library. Editing the
+provided Makefile is certainly needed to specify the install location
+of these libraries.
 
 ### Usage is Iraf inspired
 
