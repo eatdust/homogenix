@@ -55,7 +55,8 @@ program homogenix
   character(len=:), allocatable :: fileomage
 
 
-  logical, parameter :: display = .false.
+  logical, parameter :: display = .true.
+  logical, parameter :: verbose = .false.
   
 
   call get_arg_files(listfits)
@@ -104,10 +105,10 @@ program homogenix
      ny = size(image,2)
      allocate(omage(nx,ny))
 
-     if (display) write(*,*)'reading kernels ',filekernels
+     if (verbose) write(*,*)'reading kernels ',filekernels
      call initialize_kernels(filekernels)
 
-     if (display) write(*,*)'convolving ',fileimage
+     if (verbose) write(*,*)'convolving ',fileimage
      call pix_convolve(image,omage)
 
      call free_kernels()
@@ -115,7 +116,7 @@ program homogenix
      call copy_hdr_fits(fileimage,fileomage)
 
      call overwrite_image_fits(fileomage,omage)
-     if (display) write(*,*)'saving ',fileomage
+     if (verbose) write(*,*)'saving ',fileomage
      
      deallocate(image,omage)
      deallocate(fileimage,filekernels,fileomage)
