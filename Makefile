@@ -20,7 +20,7 @@ ext=$(shell uname | cut -c1-3)
 
 FC=mpif90
 CC=gcc
-FFLAGS = -O3 -fopenmp -DMPI
+FFLAGS = -O3 -fopenmp -DMPISCHED
 INCLUDE= -I/usr/include/
 LFLAGS= -L/usr/lib64 -lcfitsio
 

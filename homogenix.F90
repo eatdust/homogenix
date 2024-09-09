@@ -17,7 +17,7 @@
 !
 program homogenix
   use precision, only : fdp, fsp
-#if defined MPI
+#if defined MPISCHED
   use mpi
 #endif
   use scheduler, only : initialize_scheduler, free_scheduler,scheduled_size
@@ -30,7 +30,7 @@ program homogenix
 
   implicit none
 
-#if defined MPI
+#if defined MPISCHED
   integer :: mpiCode
 #endif
 
@@ -62,7 +62,7 @@ program homogenix
   nfiles = size(listfits(1)%files,1)
   
   
-#ifdef MPI
+#ifdef MPISCHED
   call MPI_INIT(mpiCode)
   call MPI_COMM_RANK(MPI_COMM_WORLD,mpiRank,mpiCode)
   call MPI_COMM_SIZE(MPI_COMM_WORLD,mpiSize,mpiCode)
@@ -130,7 +130,7 @@ program homogenix
 
   call free_scheduler()
 
-#ifdef MPI
+#ifdef MPISCHED
   write(*,*)'process on barrier: mpiRank= ',mpiRank
   call MPI_BARRIER(MPI_COMM_WORLD,mpiCode)
   call MPI_FINALIZE(mpiCode)
