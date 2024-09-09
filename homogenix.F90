@@ -39,7 +39,7 @@ program homogenix
 !restore all processes from previous run
   logical, parameter :: cpRestart = .false.
 !save queues each time one element is done
-  logical, parameter :: cpSave = .true.
+  logical, parameter :: cpSave = .false.
 !if zero, assume same mpiSize between runs.
   integer, save :: mpiPrevSize = 0
 
@@ -55,7 +55,7 @@ program homogenix
   character(len=:), allocatable :: fileomage
 
 
-  logical, parameter :: display = .true.
+  logical, parameter :: display = .false.
   
 
   call get_arg_files(listfits)
@@ -99,14 +99,15 @@ program homogenix
      filekernels= trim(listfits(2)%files(ifile+1))
      fileomage  = trim(listfits(3)%files(ifile+1))
 
-
      call read_image_fits(fileimage,image)
      nx = size(image,1)
      ny = size(image,2)
      allocate(omage(nx,ny))
 
+     if (display) write(*,*)'reading kernels ',filekernels
      call initialize_kernels(filekernels)
 
+     if (display) write(*,*)'convolving ',fileimage
      call pix_convolve(image,omage)
 
      call free_kernels()
@@ -114,7 +115,8 @@ program homogenix
      call copy_hdr_fits(fileimage,fileomage)
 
      call overwrite_image_fits(fileomage,omage)
-
+     if (display) write(*,*)'saving ',fileomage
+     
      deallocate(image,omage)
      deallocate(fileimage,filekernels,fileomage)
 

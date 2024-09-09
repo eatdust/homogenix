@@ -28,7 +28,8 @@ module psfeed
   real(fsp), dimension(:,:,:), allocatable :: kernels
   integer :: na, nb, nk
   
-
+  logical, parameter :: display = .false.
+  
   public initialize_kernels, check_kernels, free_kernels
   public get_psf_xsize, get_psf_ysize, get_psf_kernel
   
@@ -40,7 +41,8 @@ contains
     implicit none
     character(len=*), intent(in) :: filename
 
-    write(*,*)'reading kernels: ',filename
+    if (display) write(*,*)'reading kernels: ',filename
+
     call read_kernel_homofits(filename,kernels)
     na = size(kernels,1)
     nb = size(kernels,2)

@@ -24,7 +24,7 @@ module iohomo
   
   integer, parameter :: lenarg = 80
   character(len=lenarg) :: inlist
-
+  
   type fitsfile
      integer :: n
      character(len=lenarg), dimension(:), allocatable :: files
