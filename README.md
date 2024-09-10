@@ -3,8 +3,8 @@
 ### Summary
 
 Homogenix is a simple modern fortran code designed to perform
-fast PSF homogeneisation from the
-[PSFex](https://github.com/astromatic/psfex) variables kernels.
+fast PSF homogenization from the
+[psfex](https://github.com/astromatic/psfex) variables kernels.
 
 
 ### Compilation
@@ -17,11 +17,11 @@ of these libraries.
 
 ### Usage is Iraf inspired
 
-Dealing with multiple files (MPI parallelised):
+Dealing with multiple files (MPI+OMP parallelized):
 
         homogenix @inlistfiles @inkernelfiles @outlistfiles
 
-For a single image (OMP parallelised):
+For a single image (OMP parallelized):
 
         homogenix inimage kernelcube outimage
 
