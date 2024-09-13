@@ -4,7 +4,7 @@
 
 Homogenix is a simple modern fortran code designed to perform
 fast PSF homogenization from the
-[psfex](https://github.com/astromatic/psfex) variables kernels.
+[psfex](https://github.com/astromatic/psfex) variable kernels.
 
 
 ### Compilation
