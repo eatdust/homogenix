@@ -18,8 +18,12 @@
 
 ext=$(shell uname | cut -c1-3)
 
-FC=mpif90
-FFLAGS = -O2 -fopenmp -DMPISCHED
+#FC=mpif90
+FC=gfortran
+
+FFLAGS = -O2 -mavx2 -fopenmp
+#FFLAGS= -DMPISCHED -fopenmp-simd
+
 INCLUDE= -I/usr/include/
 LFLAGS= -L/usr/lib64 -lcfitsio
 

@@ -24,7 +24,7 @@ module psfeed
 
   private
   
-  real(fsp) :: order,xoffset, yoffset, xscale, yscale
+  real(fsp) :: xoffset, yoffset, xscale, yscale
   real(fsp), dimension(:,:,:), allocatable :: kernels
   integer :: na, nb, nk
   
@@ -40,13 +40,23 @@ contains
   subroutine initialize_kernels(filename)
     implicit none
     character(len=*), intent(in) :: filename
-
+    real(fsp), dimension(:,:,:), allocatable :: cube
+    integer :: k
+    
     if (display) write(*,*)'reading kernels: ',filename
 
-    call read_kernel_homofits(filename,kernels)
-    na = size(kernels,1)
-    nb = size(kernels,2)
-    nk = size(kernels,3)
+    call read_kernel_homofits(filename,cube)
+
+    na = size(cube,1)
+    nb = size(cube,2)
+    nk = size(cube,3)
+
+!for contiguous memory access within get_psf    
+    allocate(kernels(nk,na,nb))
+    do k=1,nk
+       kernels(k,:,:) = cube(:,:,k)
+    enddo
+    deallocate(cube)
     
     if (nk.gt.6) stop 'initialize_kernels: only up to order 2 right now!'
 
@@ -104,14 +114,26 @@ contains
     implicit none
     real(fsp), intent(in) :: x,y
     real(fsp), dimension(:,:) :: psf
+
+    integer :: i,j,na,nb
     
     real(fsp) :: xnorm, ynorm
+
+    na = size(psf,1)
+    nb = size(psf,2)
+    
     xnorm = (x-xoffset)/xscale
     ynorm = (y-yoffset)/yscale
-    
-    psf = kernels(:,:,1) + xnorm * kernels(:,:,2) + ynorm * kernels(:,:,3) &
-         + xnorm*ynorm * kernels(:,:,4) + xnorm*xnorm * kernels(:,:,5) + ynorm*ynorm * kernels(:,:,6)
-    
+!$omp simd &
+!$omp private(i,j) &
+!$omp collapse(2)
+    do j=1,nb
+       do i=1,na
+          psf(i,j) = kernels(1,i,j) + xnorm * kernels(2,i,j) + ynorm * kernels(3,i,j) &
+               + xnorm*ynorm * kernels(4,i,j) + xnorm*xnorm * kernels(5,i,j) + ynorm*ynorm * kernels(6,i,j)
+       enddo
+    enddo
+!$omp end simd          
   end subroutine get_psf_kernel
 
   

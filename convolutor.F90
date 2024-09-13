@@ -61,8 +61,11 @@ contains
     integer :: na,nb,np,nq,nx,ny
     integer :: i,j,p,q
     integer :: imp,jmq
+
     real(fsp) :: x,y,norm
     real(fsp), dimension(:,:), allocatable :: psf
+    real(fsp) :: outpix
+   
     
     nx = size(image,1)
     ny = size(image,2)
@@ -84,15 +87,19 @@ contains
      do i=1,nx
         x = real(i,fsp)
         call ptr_get_kernel(x,y,psf)
-        norm = sum(psf)
-        omage(i,j) = 0._fsp
+        outpix = 0._fsp
         do q=-nq,nq
            jmq = max(1,min(j-q,ny))
+!$omp simd &
+!$omp private(p,imp) &
+!$omp reduction(+:outpix)
            do p=-np,np
               imp = max(1,min(i-p,nx))
-              omage(i,j) = psf(p+np+1,q+nq+1)*image(imp,jmq)/norm + omage(i,j)
+              outpix = psf(p+np+1,q+nq+1)*image(imp,jmq) + outpix
            enddo
+!$omp end simd
         enddo
+        omage(i,j) = outpix
      enddo
   enddo
 !$omp end do
