@@ -18,18 +18,19 @@
 
 module convolutor
   use precision, only : fsp
-  use psfeed, only : get_psf_kernel, get_psf_xsize, get_psf_ysize
+  use psfeed, only : get_norm_psf_kernel, get_psf_xsize, get_psf_ysize
   implicit none
 
   private
 
   abstract interface
-     subroutine get_kernel(x,y,ker)
+     function get_kernel(x,y,ker)
        use precision, only : fsp
        implicit none
+       real(fsp) :: get_kernel
        real(fsp), intent(in) :: x,y
        real(fsp), dimension(:,:) :: ker
-     end subroutine get_kernel
+     end function  get_kernel
 
      function get_xsize()
        implicit none
@@ -43,7 +44,7 @@ module convolutor
      
   end interface
 
-  procedure(get_kernel), pointer :: ptr_get_kernel => get_psf_kernel
+  procedure(get_kernel), pointer :: ptr_get_kernel => get_norm_psf_kernel
   procedure(get_xsize), pointer :: ptr_get_xsize => get_psf_xsize
   procedure(get_ysize), pointer :: ptr_get_ysize => get_psf_ysize
   
@@ -86,7 +87,7 @@ contains
      y = real(j,fsp)
      do i=1,nx
         x = real(i,fsp)
-        call ptr_get_kernel(x,y,psf)
+        norm = ptr_get_kernel(x,y,psf)
         outpix = 0._fsp
         do q=-nq,nq
            jmq = max(1,min(j-q,ny))
@@ -95,7 +96,11 @@ contains
 !$omp reduction(+:outpix)
            do p=-np,np
               imp = max(1,min(i-p,nx))
+#ifndef NONORM
+              outpix = psf(p+np+1,q+nq+1)*image(imp,jmq)/norm + outpix
+#else
               outpix = psf(p+np+1,q+nq+1)*image(imp,jmq) + outpix
+#endif              
            enddo
 !$omp end simd
         enddo

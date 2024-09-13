@@ -22,7 +22,7 @@ ext=$(shell uname | cut -c1-3)
 FC=gfortran
 
 FFLAGS = -O2 -mavx2 -fopenmp
-#FFLAGS= -DMPISCHED -fopenmp-simd
+#FFLAGS= -DMPISCHED -DNONORM -fopenmp-simd
 
 INCLUDE= -I/usr/include/
 LFLAGS= -L/usr/lib64 -lcfitsio

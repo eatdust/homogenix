@@ -31,7 +31,7 @@ module psfeed
   logical, parameter :: display = .false.
   
   public initialize_kernels, check_kernels, free_kernels
-  public get_psf_xsize, get_psf_ysize, get_psf_kernel
+  public get_psf_xsize, get_psf_ysize, get_norm_psf_kernel
   
 contains
 
@@ -109,33 +109,42 @@ contains
   end subroutine free_kernels
       
 
-  
-  subroutine get_psf_kernel(x,y,psf)
+
+  function get_norm_psf_kernel(x,y,psf)
     implicit none
+    real(fsp) :: get_norm_psf_kernel
     real(fsp), intent(in) :: x,y
     real(fsp), dimension(:,:) :: psf
+    
 
     integer :: i,j,na,nb
-    
+
     real(fsp) :: xnorm, ynorm
+    real(fsp) :: sum
 
     na = size(psf,1)
     nb = size(psf,2)
-    
+
     xnorm = (x-xoffset)/xscale
     ynorm = (y-yoffset)/yscale
+    sum = 0._fsp
 !$omp simd &
 !$omp private(i,j) &
+!$omp reduction(+:sum) &
 !$omp collapse(2)
     do j=1,nb
        do i=1,na
           psf(i,j) = kernels(1,i,j) + xnorm * kernels(2,i,j) + ynorm * kernels(3,i,j) &
                + xnorm*ynorm * kernels(4,i,j) + xnorm*xnorm * kernels(5,i,j) + ynorm*ynorm * kernels(6,i,j)
+          sum = sum + psf(i,j)
        enddo
     enddo
 !$omp end simd          
-  end subroutine get_psf_kernel
 
+    get_norm_psf_kernel = sum
+    
+  end function  get_norm_psf_kernel
+  
   
 
 end module psfeed
