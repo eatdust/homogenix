@@ -139,12 +139,12 @@ program homogenix
   call MPI_FINALIZE(mpiCode)
 #endif
 
-  if (mpiRank.eq.0) then
-     write(*,*)'all files done!'
+  do i=1,size(listfits,1)
+     call free_fitsfile(listfits(i))
+  enddo
   
-     do i=1,size(listfits,1)
-        call free_fitsfile(listfits(i))
-     enddo
+  if (mpiRank.eq.0) then
+     write(*,*)'all homogenizations done!'
   endif
 
   
