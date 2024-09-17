@@ -80,7 +80,7 @@ contains
 !$omp parallel &    
 !$omp default(shared) &
 !$omp private(j,y,i,x,q,p,imp,jmq) &
-!$omp private(psf,norm)
+!$omp private(psf,norm,outpix)
     allocate(psf(na,nb))
 !$omp do
     do j=1,ny
